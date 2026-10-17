@@ -1,0 +1,13 @@
+'use client';
+import Link from 'next/link';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { Chrome, LockKeyhole, Mail, ShoppingBasket, UserRound } from 'lucide-react';
+import toast from 'react-hot-toast';
+import { authClient } from '@/lib/auth-client';
+export default function SignUpPage(){
+ const router=useRouter();const [name,setName]=useState('');const [email,setEmail]=useState('');const [password,setPassword]=useState('');const [busy,setBusy]=useState(false);
+ async function submit(e:React.FormEvent){e.preventDefault();if(password.length<8){toast.error('পাসওয়ার্ড কমপক্ষে ৮ অক্ষরের হতে হবে');return;}setBusy(true);try{const result=await authClient.signUp.email({name,email,password});if(result.error){toast.error(result.error.message||'অ্যাকাউন্ট তৈরি করা যায়নি');return;}toast.success('অ্যাকাউন্ট তৈরি হয়েছে');router.push('/signin');}catch{toast.error('সার্ভারের সঙ্গে সংযোগ করা যায়নি। সেটিংস যাচাই করুন।')}finally{setBusy(false)}}
+ async function social(provider:'google'|'github'){try{await authClient.signIn.social({provider,callbackURL:'/'});}catch{toast.error('সোশ্যাল লগইন সেটআপ করা হয়নি।')} }
+ return <div className="auth-page container"><div className="auth-card"><Link href="/" className="auth-brand"><span className="brand-icon"><ShoppingBasket size={22}/></span> বাজার দর</Link><div className="auth-heading"><h1>অ্যাকাউন্ট তৈরি করুন</h1><p>বাজারদরের বিস্তারিত দেখতে যোগ দিন</p></div><form onSubmit={submit} className="auth-form"><label>আপনার নাম<span className="input-wrap"><UserRound size={17}/><input autoComplete="name" placeholder="সম্পূর্ণ নাম" value={name} onChange={e=>setName(e.target.value)} required minLength={2}/></span></label><label>ইমেইল ঠিকানা<span className="input-wrap"><Mail size={17}/><input type="email" autoComplete="email" placeholder="name@example.com" value={email} onChange={e=>setEmail(e.target.value)} required/></span></label><label>পাসওয়ার্ড<span className="input-wrap"><LockKeyhole size={17}/><input type="password" autoComplete="new-password" placeholder="কমপক্ষে ৮ অক্ষর" value={password} onChange={e=>setPassword(e.target.value)} required minLength={8}/></span></label><button className="btn btn-primary btn-full btn-lg" disabled={busy}>{busy?'অ্যাকাউন্ট তৈরি হচ্ছে…':'সাইন আপ করুন'}</button></form><div className="auth-divider"><span/>অথবা<span/></div><div className="social-buttons"><button onClick={()=>social('google')} className="btn btn-social"><Chrome size={18}/> Google</button><button onClick={()=>social('github')} className="btn btn-social">◉ GitHub</button></div><p className="auth-switch">আগে থেকেই অ্যাকাউন্ট আছে? <Link href="/signin">সাইন ইন করুন</Link></p></div></div>
+}
