@@ -84,3 +84,7 @@ The first successful response is normalized to a shared product model. Market-sp
 - Google/GitHub login requires provider credentials. These are intentionally not embedded in source code.
 - The app does not implement email verification or password reset, as specified in the assignment.
 - Before submission, make at least 8 meaningful commits and add your actual live URL and repository URL to the assignment submission form.
+
+## Windows quick start
+
+You can also run `RUN-WEBSITE.bat` after Node.js 20.9+ is installed. For authentication, configure `.env.local` and the PostgreSQL schema first.
